@@ -1,0 +1,2 @@
+Parler des limites : limite de github pour l'ébergement, maximum 25mo pour un fichier à stocker. Le fichier .parquet pèse 167 Mo. 
+Solution trouvée : éberger le fichier en git LFS, permet d'avoir un stockage de 1GO par mois.

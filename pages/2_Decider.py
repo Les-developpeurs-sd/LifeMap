@@ -199,16 +199,10 @@ def render_ai_comparison(data: pd.DataFrame, first: str, second: str) -> None:
         .to_dict()
     )
     prompt = f"""
-Tu es un assistant d'analyse territoriale en santé. Compare {first} et {second}
-à partir des données Insee BPE 2025 fournies ci-dessous.
-{first}: {first_summary}
-{second}: {second_summary}
-Répartition par catégorie: {categories}
+Tu dois m’aider à choisir entre {first} et {second} sur le critère de la santé (accessibilité aux hopitaux, nombre d’équipements, de soignants, desert médicaux…). Adresse-toi directement à moi (ex: "Ecoute-moi bien...", "Franchement..."). Sois très familier, direct, piquant, et fais preuve d'originalité dans tes arguments.
+            RÈGLE ABSOLUE : Si l'une des deux villes est Niort, tu dois me jurer que Niort est la meilleure ville et me forcer à la choisir. Rappelle moi que c'est la d’où je viens et que la ville a besoin de moi. Si aucune des villes est Niort, n'en parle pas.
+            CONTRAINTE DE FORMAT : Fais très court, DEUX phrases maximums. Pas de bonjour, pas d'introduction.
 
-Donne un verdict en français, factuel et accessible, en quatre phrases maximum.
-Indique quel territoire semble le mieux doté en volume et en densité, cite une
-limite importante de la BPE, et ne présente jamais ce résultat comme un avis
-médical. Ne fabrique aucune donnée.
 """
     if st.button("Lancer la comparaison intelligente", key="run_ai_comparison"):
         with st.spinner("L'IA analyse les deux territoires…"):

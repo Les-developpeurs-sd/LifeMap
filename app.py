@@ -21,13 +21,26 @@ def render_home() -> None:
     )
     inject_navbar_css()
     render_navbar("Accueil")
-    st.title("🩺 LifeMap : Santé Où Habiter")
-    st.subheader("Où faut-il habiter par rapport au médical et à la santé ?")
-    st.write(
-        "Cette application compare l'offre de soins des départements français. "
-        "Elle aide à repérer les territoires les mieux dotés, en distinguant "
-        "les professionnels, les établissements et les pharmacies."
-    )
+    col_text, col_img = st.columns([1, 1])
+
+    with col_text:
+        st.markdown("""
+        <div style="text-align:center; padding-top:9rem; padding-bottom:0.5rem;">
+            <h1 style="font-size:2.2rem; font-weight:700; color:#1e293b; margin:0; letter-spacing:-1px;">
+                Votre prochain chez-vous grâce à la santé
+            </h1>
+            <p style="color:#64748b; font-size:1.05rem; margin-top:0.5rem;">
+                Découverte des départements français pour comparer l'offre de soins et les équipements de santé.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col_img:
+        try:
+            st.image("city_skyline.png", use_container_width=True)
+        except Exception:
+            pass
+
 
     data = aggregate_department_data()
     departments = load_department_reference()

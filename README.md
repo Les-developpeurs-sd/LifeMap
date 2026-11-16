@@ -25,14 +25,19 @@ Les fichiers à placer dans `data/` sont :
 
 - `BPE25.parquet` : Insee, Base permanente des équipements 2025, un lieu
   d'exercice ou équipement par ligne ;
+- `donnees_departements.csv` : référentiel départemental avec les codes
+  `REG`/`DEP`, le nom `Département` et la population municipale ;
 - `departements-avec-outre-mer.geojson` : référentiel des contours et des noms
   de départements ;
 - `regions-avec-outre-mer.geojson` : référentiel régional disponible pour les
   extensions cartographiques.
 
-La jointure principale est contrôlée sur le code département `DEP` de la BPE,
-normalisé en texte, avec `properties.code` du GeoJSON. Les codes `01` à `09`,
-`2A`, `2B` et `971` à `976` sont ainsi conservés correctement.
+La jointure principale croise `REG` et `DEP` de la BPE avec les mêmes colonnes
+du fichier `donnees_departements.csv`. `REG` permet de rattacher la région et
+`DEP` identifie le département sans dupliquer les lignes (un même `REG`
+correspond à plusieurs départements). Le nom affiché est celui de la colonne
+`Département` du CSV. Les codes `01` à `09`, `2A`, `2B` et `971` à `976` sont
+normalisés en texte.
 
 La version fournie analyse les volumes recensés. Pour publier une densité pour
 100 000 habitants, ajouter une source officielle Insee des populations 2023

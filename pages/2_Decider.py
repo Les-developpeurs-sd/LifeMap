@@ -47,16 +47,21 @@ def render_decision() -> None:
     if "selected_departments" not in st.session_state:
         st.session_state["selected_departments"] = departments[:2]
     with st.form("department_comparison"):
-        first = st.selectbox(
-            "Premier département",
-            departments,
-            index=departments.index(st.session_state["selected_departments"][0]),
-        )
-        second = st.selectbox(
-            "Second département",
-            departments,
-            index=departments.index(st.session_state["selected_departments"][1]),
-        )
+        first_column, second_column = st.columns(2)
+        with first_column:
+            st.subheader("📍 Territoire 1")
+            first = st.selectbox(
+                "Choisissez un département",
+                departments,
+                index=departments.index(st.session_state["selected_departments"][0]),
+            )
+        with second_column:
+            st.subheader("📍 Territoire 2")
+            second = st.selectbox(
+                "Choisissez un département",
+                departments,
+                index=departments.index(st.session_state["selected_departments"][1]),
+            )
         submitted = st.form_submit_button("Comparer")
     if submitted:
         st.session_state["selected_departments"] = [first, second]

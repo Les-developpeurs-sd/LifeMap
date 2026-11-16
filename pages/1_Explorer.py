@@ -20,25 +20,28 @@ def apply_filters(data):
     Returns:
         Sous-ensemble filtré.
     """
-    regions = ["Toutes"] + sorted(data["REG"].dropna().astype(str).unique())
+    region_options = {"Toutes les régions": None}
+    for row in data[["REG", "region"]].drop_duplicates().sort_values("region").itertuples():
+        if row.region:
+            region_options[f"{row.region} ({row.REG})"] = row.REG
     categories = ["Toutes"] + sorted(data["categorie"].unique())
     with st.form("filters"):
-        region = st.selectbox("Région administrative (code)", regions)
+        region_label = st.selectbox("Région administrative", list(region_options))
         category = st.selectbox("Type d'offre", categories)
         minimum = st.slider("Nombre minimum d'équipements", 0, 5000, 0, step=10)
         submitted = st.form_submit_button("Appliquer les filtres")
     if submitted:
         st.session_state["last_filters"] = {
-            "region": region,
+            "region": region_options[region_label],
             "category": category,
             "minimum": minimum,
         }
     selected = st.session_state.get(
-        "last_filters", {"region": "Toutes", "category": "Toutes", "minimum": 0}
+        "last_filters", {"region": None, "category": "Toutes", "minimum": 0}
     )
     filtered = data.copy()
-    if selected["region"] != "Toutes":
-        filtered = filtered[filtered["REG"].astype(str) == selected["region"]]
+    if selected["region"] is not None:
+        filtered = filtered[filtered["REG"] == selected["region"]]
     if selected["category"] != "Toutes":
         filtered = filtered[filtered["categorie"] == selected["category"]]
     return filtered[filtered["equipements"] >= selected["minimum"]]

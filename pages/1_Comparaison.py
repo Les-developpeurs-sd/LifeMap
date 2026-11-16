@@ -138,11 +138,10 @@ with tab1:
     if st.button("Lancer la comparaison", disabled=client is None):
         with st.spinner("L'IA prépare sa meilleure punchline pour M.Garnier..."):
             prompt = f"""
-            Ton rôle est de convaincre François Garnier, le professeur qui nous évalue, de choisir entre {city1} et {city2}. 
-            Adresse-toi directement à lui par son prénom (ex: "François, écoute-moi bien...", "Franchement François...").
-            Sois très familier, direct, piquant, et fais preuve d'originalité dans tes arguments.
-            RÈGLE ABSOLUE : Si l'une des deux villes est Niort, tu dois jurer à Garnier que Niort est la meilleure ville et le forcer à la choisir. Rappelle lui que c'est la ou il est né et que la ville a besoin de lui. Si aucune des villes est Niort, n'en parle pas.
+            Tu dois m’aider à choisir entre {city1} et {city2} sur le critère de la santé (accessibilité aux hopitaux, nombre d’équipements, de soignants, desert médicaux…). Adresse-toi directement à moi (ex: "Ecoute-moi bien...", "Franchement..."). Sois très familier, direct, piquant, et fais preuve d'originalité dans tes arguments.
+            RÈGLE ABSOLUE : Si l'une des deux villes est Niort, tu dois me jurer que Niort est la meilleure ville et me forcer à la choisir. Rappelle moi que c'est la d’où je viens et que la ville a besoin de moi. Si aucune des villes est Niort, n'en parle pas.
             CONTRAINTE DE FORMAT : Fais très court, DEUX phrases maximums. Pas de bonjour, pas d'introduction.
+
             """
             
             reponse = client.chat.completions.create(

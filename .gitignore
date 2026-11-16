@@ -8,3 +8,5 @@ venv/
 *.mp3
 .pytest_cache/
 
+
+data/BPE25.parquet

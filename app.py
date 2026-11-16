@@ -1,4 +1,4 @@
-"""Accueil de l'application Santé Où Habiter."""
+"""Accueil de l'application LifeMap : Santé Où Habiter."""
 
 import streamlit as st
 import plotly.express as px
@@ -14,14 +14,14 @@ from utils.navbar import inject_navbar_css, render_footer, render_navbar
 def render_home() -> None:
     """Affiche la synthèse nationale et la méthode de lecture des résultats."""
     st.set_page_config(
-        page_title="Santé Où Habiter",
+        page_title="LifeMap : Santé Où Habiter",
         page_icon="🩺",
         layout="wide",
         initial_sidebar_state="collapsed",
     )
     inject_navbar_css()
     render_navbar("Accueil")
-    st.title("🩺 Santé Où Habiter")
+    st.title("🩺 LifeMap : Santé Où Habiter")
     st.subheader("Où faut-il habiter par rapport au médical et à la santé ?")
     st.write(
         "Cette application compare l'offre de soins des départements français. "

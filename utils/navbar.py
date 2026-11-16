@@ -1,4 +1,4 @@
-"""Styles et navigation communs à toutes les pages de Santé Où Habiter."""
+"""Styles et navigation communs à toutes les pages de LifeMap : Santé Où Habiter."""
 
 import streamlit as st
 
@@ -137,7 +137,7 @@ def render_navbar(active_page: str = "Accueil") -> None:
     columns = st.columns([2.4, 1, 1, 1])
     with columns[0]:
         st.markdown(
-            '<div class="navbar-brand-text">🩺 <span>Santé</span> Où Habiter</div>',
+            '<div class="navbar-brand-text">🩺 <span>LifeMap</span> : Santé Où Habiter</div>',
             unsafe_allow_html=True,
         )
     pages = [

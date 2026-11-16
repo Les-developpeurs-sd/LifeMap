@@ -1,4 +1,4 @@
-# Santé Où Habiter
+# LifeMap : Santé Où Habiter
 
 Application Streamlit répondant à la question :
 

@@ -117,14 +117,8 @@ def _render_tab_context(log_data_1, log_data_2):
 st.divider()
 
 # Répartir la comparaison par thème métier.
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
-    "🔍 Comparaison intelligente",
-    "📊 Vue d'ensemble",
-    "👥 Démographie",
-    "💼 Emploi",
-    "🎓 Formations",
-    "🏠 Logement",
-    "🌤️ Météo"
+tab1 = st.tabs([
+    "🔍 Comparaison intelligente"
 ])
 
 
@@ -136,7 +130,7 @@ with tab1:
     client = Groq(api_key=GROQ_API_KEY)
 
     if st.button("Lancer la comparaison", disabled=client is None):
-        with st.spinner("L'IA prépare sa meilleure punchline pour M.Garnier..."):
+        with st.spinner("L'IA prépare sa meilleure punchline pour M.Daguin..."):
             prompt = f"""
             Tu dois m’aider à choisir entre {city1} et {city2} sur le critère de la santé (accessibilité aux hopitaux, nombre d’équipements, de soignants, desert médicaux…). Adresse-toi directement à moi (ex: "Ecoute-moi bien...", "Franchement..."). Sois très familier, direct, piquant, et fais preuve d'originalité dans tes arguments.
             RÈGLE ABSOLUE : Si l'une des deux villes est Niort, tu dois me jurer que Niort est la meilleure ville et me forcer à la choisir. Rappelle moi que c'est la d’où je viens et que la ville a besoin de moi. Si aucune des villes est Niort, n'en parle pas.

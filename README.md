@@ -64,6 +64,19 @@ streamlit run app.py
 Le parquet est volumineux : le premier chargement peut prendre quelques
 secondes. Les appels suivants bénéficient du cache Streamlit.
 
+### Comparaison intelligente
+
+L'onglet « Comparaison intelligente » utilise Groq pour formuler un résumé
+factuel et gTTS pour proposer une lecture audio. Pour l'activer en local,
+créer `.streamlit/secrets.toml` (ce fichier est ignoré par Git) :
+
+```toml
+GROQ_API_KEY = "votre-cle-groq"
+```
+
+La clé est uniquement nécessaire lorsque l'onglet de comparaison intelligente
+est utilisé.
+
 ## Organisation
 
 - `app.py` : accueil, indicateurs et première conclusion ;

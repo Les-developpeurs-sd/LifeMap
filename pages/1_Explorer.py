@@ -11,40 +11,49 @@ from utils.data_loader import (
 from utils.navbar import inject_navbar_css, render_footer, render_navbar
 
 
-def apply_filters(data):
-    """Filtre les agrégats selon les choix validés par l'utilisateur.
-
-    Args:
-        data: Agrégats de l'offre de soins.
-
-    Returns:
-        Sous-ensemble filtré.
-    """
+def get_filter_params(data):
+    """Récupère les paramètres de filtrage validés dans le formulaire."""
     region_options = {"Toutes les régions": None}
     for row in data[["REG", "region"]].drop_duplicates().sort_values("region").itertuples():
         if row.region:
             region_options[f"{row.region} ({row.REG})"] = row.REG
+
     categories = ["Toutes"] + sorted(data["categorie"].unique())
+
     with st.form("filters"):
         region_label = st.selectbox("Région administrative", list(region_options))
         category = st.selectbox("Type d'offre", categories)
-        minimum = st.slider("Nombre minimum d'équipements", 0, 5000, 0, step=10)
+        minimum, maximum = st.slider(
+            "Nombre d'équipements par département (min - max)",
+            min_value=0,
+            max_value=25000,
+            value=(0, 25000),
+            step=10,
+        )
         submitted = st.form_submit_button("Appliquer les filtres")
+
     if submitted:
         st.session_state["last_filters"] = {
             "region": region_options[region_label],
             "category": category,
             "minimum": minimum,
+            "maximum": maximum,
         }
-    selected = st.session_state.get(
-        "last_filters", {"region": None, "category": "Toutes", "minimum": 0}
+
+    return st.session_state.get(
+        "last_filters",
+        {"region": None, "category": "Toutes", "minimum": 0, "maximum": 25000},
     )
+
+
+def apply_row_filters(data, selected):
+    """Filtre les lignes selon la région et la catégorie."""
     filtered = data.copy()
     if selected["region"] is not None:
         filtered = filtered[filtered["REG"] == selected["region"]]
     if selected["category"] != "Toutes":
         filtered = filtered[filtered["categorie"] == selected["category"]]
-    return filtered[filtered["equipements"] >= selected["minimum"]]
+    return filtered
 
 
 def render_explorer() -> None:
@@ -54,17 +63,33 @@ def render_explorer() -> None:
     render_navbar("Explorer")
     st.title("🔎 Explorer l'offre de soins")
     st.write("Validez plusieurs critères en une seule fois grâce au formulaire.")
+
     data = aggregate_department_data()
-    filtered = apply_filters(data)
-    if filtered.empty:
+    selected = get_filter_params(data)
+    filtered_rows = apply_row_filters(data, selected)
+
+    # 1. Agrégation par département puis filtrage sur le total min - max
+    dept_totals = (
+        filtered_rows.groupby(["code_departement", "departement"], as_index=False)["equipements"]
+        .sum()
+    )
+    valid_depts = dept_totals[
+        (dept_totals["equipements"] >= selected["minimum"])
+        & (dept_totals["equipements"] <= selected["maximum"])
+    ]
+
+    if valid_depts.empty:
         st.warning("Aucun résultat avec ces filtres.")
         return
-    ranking = (
-        filtered.groupby(["code_departement", "departement"], as_index=False)["equipements"]
-        .sum()
-        .sort_values("equipements", ascending=False)
-    )
+
+    # On restreint aussi les lignes aux départements retenus pour garder le camembert cohérent
+    filtered = filtered_rows[
+        filtered_rows["code_departement"].isin(valid_depts["code_departement"])
+    ]
+
+    ranking = valid_depts.sort_values("equipements", ascending=False)
     st.metric("Départements affichés", format_number(len(ranking)))
+
     left, right = st.columns(2)
     with left:
         fig = px.bar(
@@ -92,13 +117,10 @@ def render_explorer() -> None:
             hole=0.45,
         )
         st.plotly_chart(fig, width="stretch")
-    map_data = (
-        filtered.groupby(["code_departement", "departement"], as_index=False)["equipements"]
-        .sum()
-    )
+
     st.subheader("Carte départementale")
     fig_map = px.choropleth_map(
-        map_data,
+        ranking,
         geojson=load_department_geojson(),
         locations="code_departement",
         featureidkey="properties.code",

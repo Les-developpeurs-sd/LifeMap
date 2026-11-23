@@ -217,7 +217,7 @@ Tu dois m’aider à choisir entre {first} et {second} sur le critère de la san
             try:
                 response = client.chat.completions.create(
                     messages=[{"role": "user", "content": prompt}],
-                    model="llama-3.1-8b-instant",
+                    model="openai/gpt-oss-120b",
                     temperature=0.2,
                     max_tokens=300,
                 )
@@ -841,7 +841,7 @@ def render_join_checks(checks: dict) -> None:
 
 
 def render_comparison(data: pd.DataFrame) -> None:
-    """Affiche la comparaison de deux départements (onglets d'origine).
+    """Affiche la comparaison de deux départements sur une seule page, sans sous-onglets.
 
     Args:
         data: Agrégats départementaux issus de ``aggregate_department_data``.
@@ -855,27 +855,22 @@ def render_comparison(data: pd.DataFrame) -> None:
         st.warning("Veuillez choisir deux départements différents.")
         return
 
-    intelligent, overview, categories, densities = st.tabs(
-        [
-            "🔍 Comparaison intelligente",
-            "📊 Vue d'ensemble",
-            "🩺 Catégories de soins",
-            "📈 Densités",
-        ]
-    )
-    with intelligent:
-        try:
-            render_ai_comparison(data, first, second)
-        except (KeyError, FileNotFoundError):
-            st.info("Ajoutez GROQ_API_KEY dans .streamlit/secrets.toml pour activer cet onglet.")
-    with overview:
-        render_summary(data, first, second)
-    with categories:
-        st.header("Comparaison des catégories de soins")
-        render_category_comparison(data, first, second)
-    with densities:
-        st.header("Une comparaison équitable par population")
-        render_density_comparison(data, first, second)
+    st.divider()
+    render_summary(data, first, second)
+
+    st.divider()
+    try:
+        render_ai_comparison(data, first, second)
+    except (KeyError, FileNotFoundError):
+        st.info("Ajoutez GROQ_API_KEY dans .streamlit/secrets.toml pour activer la comparaison intelligente.")
+
+    st.divider()
+    st.header("🩺 Comparaison des catégories de soins")
+    render_category_comparison(data, first, second)
+
+    st.divider()
+    st.header("📈 Une comparaison équitable par population")
+    render_density_comparison(data, first, second)
 
 
 def render_limits(checks: dict) -> None:

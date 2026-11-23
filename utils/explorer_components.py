@@ -8,7 +8,6 @@ from utils.data_loader import (
     format_number,
     load_department_geojson,
 )
-from utils.navbar import inject_navbar_css, render_footer, render_navbar
 
 
 def get_filter_params(data):
@@ -56,11 +55,8 @@ def apply_row_filters(data, selected):
     return filtered
 
 
-def render_explorer() -> None:
+def render_explorer_content() -> None:
     """Affiche les filtres, le classement et les graphiques d'exploration."""
-    st.set_page_config(page_title="Explorer l'offre", page_icon="🔎", layout="wide")
-    inject_navbar_css()
-    render_navbar("Explorer")
     st.title("🔎 Explorer l'offre de soins")
     st.write("Validez plusieurs critères en une seule fois grâce au formulaire.")
 
@@ -135,7 +131,6 @@ def render_explorer() -> None:
     fig_map.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
     st.plotly_chart(fig_map, width="stretch")
     st.dataframe(ranking, hide_index=True, width="stretch")
-    render_footer()
 
 
 if __name__ == "__main__":

@@ -134,7 +134,7 @@ def render_navbar(active_page: str = "Accueil") -> None:
     Args:
         active_page: Nom de la page actuellement affichée.
     """
-    columns = st.columns([2.4, 1, 1, 1])
+    columns = st.columns([2.4, 1, 1, 1, 1])
     with columns[0]:
         st.markdown(
             '<div class="navbar-brand-text">🩺 <span>LifeMap</span> : Santé Où Habiter</div>',
@@ -142,8 +142,9 @@ def render_navbar(active_page: str = "Accueil") -> None:
         )
     pages = [
         ("Accueil", "app.py"),
-        ("Explorer", "pages/1_Explorer.py"),
-        ("Comparer", "pages/2_Decider.py"),
+        ("Déserts médicaux", "pages/2_Decider.py"),
+        ("Où déménager ?", "pages/3_Demenager.py"),
+        ("Comparer", "pages/4_Comparer.py"),
     ]
     for column, (label, path) in zip(columns[1:], pages):
         with column:

@@ -9,6 +9,7 @@ from utils.data_loader import (
     load_department_reference,
 )
 from utils.navbar import inject_navbar_css, render_footer, render_navbar
+from utils.explorer_components import render_explorer_content
 
 
 def render_home() -> None:
@@ -85,6 +86,9 @@ def render_home() -> None:
         "Source principale : Insee, Base permanente des équipements 2025. "
         "La carte des départements sert de référentiel géographique."
     )
+
+    st.divider()
+    render_explorer_content()
     render_footer()
 
 

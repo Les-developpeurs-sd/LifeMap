@@ -27,10 +27,10 @@ def render_home() -> None:
         st.markdown("""
         <div style="text-align:center; padding-top:9rem; padding-bottom:0.5rem;">
             <h1 style="font-size:2.2rem; font-weight:700; color:#1e293b; margin:0; letter-spacing:-1px;">
-                Votre prochain chez-vous grâce à la santé
+                Votre prochain chez-vous grâce à la santé, éviter les déserts médicaux
             </h1>
             <p style="color:#64748b; font-size:1.05rem; margin-top:0.5rem;">
-                Découverte des départements français pour comparer l'offre de soins et les équipements de santé.
+                Découverte des départements français pour les comparer et analyser les déserts médicaux.
             </p>
         </div>
         """, unsafe_allow_html=True)

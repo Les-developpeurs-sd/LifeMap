@@ -20,10 +20,6 @@ def render_deserts_page() -> None:
     inject_navbar_css()
     render_navbar("Déserts médicaux")
     st.title("🏜️ Déserts médicaux")
-    st.write(
-        "Repérez les déserts médicaux par profession, puis les départements "
-        "qui cumulent les plus fortes inégalités d'accès."
-    )
 
     table, _ = build_specialty_table()
     render_desert_overview(table)

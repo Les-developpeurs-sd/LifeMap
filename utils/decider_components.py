@@ -35,7 +35,7 @@ def render_department_selector(departments: list[str]) -> tuple[str, str]:
         Couple des départements mémorisés dans la session.
     """
     if "selected_departments" not in st.session_state:
-        st.session_state["selected_departments"] = departments[:2]
+        st.session_state["selected_departments"] = departments[23], departments[15]
 
     with st.form("department_comparison"):
         first_column, second_column = st.columns(2)
@@ -137,13 +137,6 @@ def render_category_comparison(data: pd.DataFrame, first: str, second: str) -> N
     )
     fig.update_xaxes(tickangle=-35)
     st.plotly_chart(fig, width="stretch")
-    st.dataframe(
-        comparison.pivot(index="categorie", columns="departement", values="equipements")
-        .fillna(0)
-        .reset_index(),
-        hide_index=True,
-        width="stretch",
-    )
 
 def render_ai_comparison(data: pd.DataFrame, first: str, second: str) -> None:
     """Génère un verdict argumenté par Groq et propose sa version audio.
@@ -153,7 +146,6 @@ def render_ai_comparison(data: pd.DataFrame, first: str, second: str) -> None:
         first: Premier département.
         second: Second département.
     """
-    st.header("🔍 Comparaison intelligente")
     st.write(
         "L'IA résume les résultats observés pour aider à interpréter la comparaison. "
         "Elle ne remplace pas une analyse médicale ou statistique complète."
@@ -454,11 +446,6 @@ def render_desert_overview(table: pd.DataFrame) -> None:
         table: Table produite par ``build_specialty_table``.
     """
     st.subheader("Où sont les déserts médicaux, profession par profession ?")
-    st.write(
-        "Un département est classé **désert médical** pour une profession lorsque sa "
-        "densité (lieux d'exercice pour 100 000 habitants) est inférieure à un seuil "
-        "exprimé en part de la **moyenne nationale**. Réglez le seuil et la profession."
-    )
     left, right = st.columns([2, 1])
     specialty = left.selectbox("Profession", list(table["specialite"].unique()), key="desert_specialty")
     threshold = right.slider(
@@ -489,25 +476,6 @@ def render_desert_overview(table: pd.DataFrame) -> None:
     )
     st.plotly_chart(fig_map, width="stretch")
     st.caption("Carte de la France métropolitaine. L'outre-mer figure dans le graphique et le tableau.")
-
-    worst = current.sort_values("densite_100k").head(15).sort_values("densite_100k", ascending=False)
-    fig_bar = px.bar(
-        worst,
-        x="densite_100k",
-        y="departement",
-        orientation="h",
-        color="statut",
-        color_discrete_map=STATUS_COLORS,
-        category_orders={"statut": STATUS_ORDER},
-        title=f"Les 15 départements les moins dotés : {specialty}",
-        labels={"densite_100k": "Lieux d'exercice pour 100 000 habitants", "departement": "", "statut": ""},
-        template="plotly_white",
-    )
-    fig_bar.add_vline(
-        x=national_density, line_dash="dash", line_color="#1e293b",
-        annotation_text="Moyenne nationale", annotation_position="top",
-    )
-    st.plotly_chart(fig_bar, width="stretch")
 
     best = current.sort_values("densite_100k", ascending=False).iloc[0]
     st.info(
@@ -563,15 +531,6 @@ def render_desert_cumulation(table: pd.DataFrame) -> None:
     pivot = pivot.loc[
         cumul.set_index("departement").loc[pivot.index, "nb_deserts"].sort_values(ascending=False).index
     ]
-    fig_heat = px.imshow(
-        pivot, color_continuous_scale="RdYlGn", zmin=0, zmax=INDEX_CAP, aspect="auto",
-        text_auto=".1f", title="Indice d'accès des 20 départements les plus touchés (1 = moyenne nationale)",
-        labels={"color": "Indice"},
-    )
-    fig_heat.update_xaxes(tickangle=-40, title="")
-    fig_heat.update_yaxes(title="")
-    fig_heat.update_layout(height=620)
-    st.plotly_chart(fig_heat, width="stretch")
 
     most_hit = work[work["desert"]].groupby("specialite").size().sort_values(ascending=False)
     if not most_hit.empty:
@@ -693,48 +652,16 @@ def render_move_results(table: pd.DataFrame, settings: dict) -> None:
     fig_bar.add_vline(x=50, line_dash="dash", line_color="#1e293b")
     st.plotly_chart(fig_bar, width="stretch")
 
-    map_col, heat_col = st.columns(2)
-    with map_col:
-        st.markdown("**Carte des départements retenus**")
-        fig_map = make_department_map(
-            ranking[~ranking["code_departement"].str.startswith("97")],
-            color="score",
-            labels={"score": "Score"},
-            scale="Greens",
-        )
-        st.plotly_chart(fig_map, width="stretch")
-        st.caption("En blanc : départements écartés (désert sur un critère, région ou outre-mer).")
-    with heat_col:
-        st.markdown("**Détail par profession (1 = moyenne nationale)**")
-        heat = detail[detail["code_departement"].isin(top["code_departement"])].copy()
-        heat["indice_plafonne"] = heat["indice"].clip(upper=INDEX_CAP)
-        pivot = heat.pivot(index="departement", columns="specialite", values="indice_plafonne")
-        pivot = pivot.loc[top["departement"]]
-        fig_heat = px.imshow(
-            pivot, color_continuous_scale="RdYlGn", zmin=0, zmax=INDEX_CAP, aspect="auto",
-            text_auto=".1f", labels={"color": "Indice"},
-        )
-        fig_heat.update_xaxes(tickangle=-40, title="")
-        fig_heat.update_yaxes(title="")
-        fig_heat.update_layout(height=520, margin={"t": 10})
-        st.plotly_chart(fig_heat, width="stretch")
-
-    display = top.rename(
-        columns={
-            "rang": "Rang", "departement": "Département", "region": "Région",
-            "population": "Population", "score": "Score", "nb_deserts": "Déserts",
-            "point_faible": "Point faible", "indice_point_faible": "Indice du point faible",
-        }
-    ).drop(columns="code_departement")
-    display["Score"] = display["Score"].round(1)
-    display["Indice du point faible"] = display["Indice du point faible"].round(2)
-    st.dataframe(display, hide_index=True, width="stretch")
-    st.download_button(
-        "Télécharger le classement (CSV)",
-        display.to_csv(index=False, sep=";").encode("utf-8-sig"),
-        file_name="departements_conseilles.csv",
-        mime="text/csv",
+    st.markdown("**Carte des départements retenus**")
+    fig_map = make_department_map(
+        ranking[~ranking["code_departement"].str.startswith("97")],
+        color="score",
+        labels={"score": "Score"},
+        scale="Greens",
     )
+    st.plotly_chart(fig_map, width="stretch")
+    st.caption("En blanc : départements écartés (désert sur un critère, région ou outre-mer).")
+
     st.info(
         f"**Conclusion** : pour le profil choisi, **{top['departement'].iloc[0]}** offre le meilleur "
         f"accès ({top['score'].iloc[0]:.0f}/100). Le point faible le plus fréquent parmi les "
@@ -749,11 +676,6 @@ def render_move_tab(table: pd.DataFrame) -> None:
     Args:
         table: Table produite par ``build_specialty_table``.
     """
-    st.subheader("Trouver les départements les mieux dotés pour mon profil")
-    st.write(
-        "Indiquez les professions de santé dont vous avez besoin : l'application calcule "
-        "un score d'accès par département et écarte ceux où l'une d'elles est en désert."
-    )
     settings = render_move_form(table)
     render_move_results(table, settings)
 
@@ -802,7 +724,6 @@ def render_comparison(data: pd.DataFrame) -> None:
         st.info("Ajoutez GROQ_API_KEY dans .streamlit/secrets.toml pour activer la comparaison intelligente.")
 
     st.divider()
-    st.header("🩺 Comparaison des catégories de soins")
     render_category_comparison(data, first, second)
 
 

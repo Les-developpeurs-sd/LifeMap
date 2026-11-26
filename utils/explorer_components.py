@@ -84,7 +84,10 @@ def render_explorer_content() -> None:
     ]
 
     ranking = valid_depts.sort_values("equipements", ascending=False)
-    st.metric("Départements affichés", format_number(len(ranking)))
+    first, second, third = st.columns(3)
+    first.metric("Équipements de santé analysés", format_number(int(filtered["equipements"].sum())))
+    second.metric("Départements observés", format_number(len(valid_depts)))
+    third.metric("Catégories comparées", format_number(filtered["categorie"].nunique()))
 
     left, right = st.columns(2)
     with left:
@@ -130,8 +133,6 @@ def render_explorer_content() -> None:
     )
     fig_map.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
     st.plotly_chart(fig_map, width="stretch")
-    st.dataframe(ranking, hide_index=True, width="stretch")
-
 
 if __name__ == "__main__":
     render_explorer()

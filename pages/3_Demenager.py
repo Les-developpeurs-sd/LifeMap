@@ -16,10 +16,6 @@ def render_move_page() -> None:
     inject_navbar_css()
     render_navbar("Où déménager ?")
     st.title("🧭 Où déménager pour éviter les déserts médicaux ?")
-    st.write(
-        "Choisissez vos besoins de santé pour obtenir un classement des départements "
-        "les mieux dotés pour votre profil."
-    )
 
     table, _ = build_specialty_table()
     render_move_tab(table)

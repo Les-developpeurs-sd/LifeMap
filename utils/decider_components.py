@@ -177,7 +177,7 @@ Tu dois m’aider à choisir entre {first} et {second} sur le critère de la san
             try:
                 response = client.chat.completions.create(
                     messages=[{"role": "user", "content": prompt}],
-                    model="openai/gpt-oss-120b",
+                    model="openai/gpt-oss-20b",
                     temperature=0.2,
                     max_tokens=300,
                 )

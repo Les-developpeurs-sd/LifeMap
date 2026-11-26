@@ -179,7 +179,7 @@ Tu dois m’aider à choisir entre {first} et {second} sur le critère de la san
                     messages=[{"role": "user", "content": prompt}],
                     model="openai/gpt-oss-20b",
                     temperature=0.2,
-                    max_tokens=300,
+                    max_tokens=1000,
                 )
             except (APIConnectionError, APIStatusError, RateLimitError) as error:
                 st.error(f"Impossible d'obtenir le verdict Groq : {error}")

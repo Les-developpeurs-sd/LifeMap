@@ -99,7 +99,7 @@ def render_explorer_content() -> None:
             labels={"equipements": "Équipements", "departement": ""},
             template="plotly_white",
             color="equipements",
-            color_continuous_scale="Viridis",
+            color_continuous_scale="Teal",
         )
         st.plotly_chart(fig, width="stretch")
     with right:
@@ -114,6 +114,17 @@ def render_explorer_content() -> None:
             names="categorie",
             title="Répartition par type d'offre",
             hole=0.45,
+            color_discrete_sequence=px.colors.sequential.Teal,
+        )
+        fig.update_layout(
+            template="plotly_white",
+            font=dict(family="Inter, sans-serif", color="#1e293b"),
+            title_font_color="#1e293b",
+            title_font_size=16,
+        )
+        fig.update_traces(
+            textfont=dict(family="Inter, sans-serif", color="#ffffff", size=11),
+            marker=dict(line=dict(color="#ffffff", width=2)),
         )
         st.plotly_chart(fig, width="stretch")
 

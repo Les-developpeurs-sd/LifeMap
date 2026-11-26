@@ -77,11 +77,10 @@ Pour exécuter l'application en local sur votre machine :
 #### **Prérequis**
 - Python 3.9+
 - pip (gestionnaire de paquets Python)
-- Git (optionnel, pour cloner le dépôt)
 
 #### **Étapes d'installation**
 
-1. **Télécharger le ZIP** 
+1. **Télécharger le ZIP** sur le lien https://github.com/Les-developpeurs-sd/LifeMap
 
 2. **Créer un environnement virtuel** (optionnel) :
    ```bash

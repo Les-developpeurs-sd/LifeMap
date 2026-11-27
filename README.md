@@ -42,7 +42,7 @@ LifeMap utilise plusieurs sources de données officielles pour fournir une analy
 |---------|--------|-------------|--------|
 | **BPE25.parquet** | Insee | Base Permanente des Équipements 2025. Contient tous les équipements et lieux d'exercice en France. | Parquet |
 | **donnees_departements.csv** | Insee | Référentiel des départements avec codes REG, DEP, noms et population municipale (PMUN). | CSV (séparateur ;) |
-| **departements-avec-outre-mer.geojson** | Insee | Contours géographiques (polygones) de tous les départements français (métropole + outre-mer). | GeoJSON |
+| **departements-avec-outre-mer.geojson** | france-geojson | Contours géographiques (polygones) de tous les départements français (métropole + outre-mer). | GeoJSON |
 
 
 ### **Nomenclature des équipements**
